@@ -5,9 +5,21 @@
 </div>
 
 <script>
-Vue.component('example', {
-  // Implement this!
-})
+  Vue.component('example', {
+    // Implement this!
+    render(h) {
+      return h(
+        'div',
+        this.tags.map((tag, index) =>
+          h(
+            tag,
+            index
+          )
+        )
+      )
+    },
+    props: ['tags']
+  })
 
-new Vue({ el: '#app' })
+  new Vue({ el: '#app' })
 </script>

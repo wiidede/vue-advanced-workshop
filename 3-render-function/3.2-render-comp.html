@@ -1,23 +1,45 @@
 <script src="../node_modules/vue/dist/vue.js"></script>
 
 <div id="app">
+  <button @click="ok = !ok"></button>
   <example :ok="ok"></example>
 </div>
 
 <script>
 const Foo = {
   // Implement this!
+  render (h) {
+    return h(
+      'div',
+      'foo'
+    )
+  }
 }
 
 const Bar = {
   // Implement this!
+  render (h) {
+    return h(
+      'div',
+      'bar'
+    )
+  }
 }
 
 Vue.component('example', {
   // Implement this!
+  props: ['ok'],
+  render (h) {
+    return h(
+      this.ok ? Foo : Bar
+    )
+  }
 })
 
 new Vue({
-  el: '#app'
+  el: '#app',
+  data: {
+    ok: true
+  }
 })
 </script>

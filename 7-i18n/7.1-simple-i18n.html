@@ -10,6 +10,11 @@
 <script>
 const i18nPlugin = {
   // Implement this!
+  install: function(Vue, options) {
+    Vue.prototype.$t = function(key) {
+      return options[this.$root.lang][key]
+    }
+  }
 }
 
 Vue.use(i18nPlugin, /* option */ {

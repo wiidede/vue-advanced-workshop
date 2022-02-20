@@ -17,35 +17,61 @@
 </div>
 
 <script>
-const validationPlugin = {
-  // Implement this!
-}
+  const validationPlugin = {
+    // Implement this!
+    install(Vue) {
+      Vue.mixin({
+        computed: {
+          '$v': function () {
+            const validations = this.$options.validations
+            if (validations) {
+              const errors = []
+              Object.keys(validations).forEach(key => {
+                const validation = validations[key]
+                const value = this[key]
+                if (!validation.validate(value)) {
+                  errors.push(validation.message(key, value))
+                }
+              })
 
-Vue.use(validationPlugin)
-
-new Vue({
-  el: '#app',
-  data: {
-    text: 'foo',
-    email: ''
-  },
-  validations: {
-    text: {
-      validate: value => value.length >= 5,
-      message: (key, value) => `${key} should have a min length of 5, but got ${value.length}`
-    },
-    email: {
-      validate: value => /email/.test(value),
-      message: key => `${key} must be a valid email`
-    }
-  },
-  methods: {
-    validate (e) {
-      if (!this.$v.valid) {
-        e.preventDefault()
-        alert('not valid!')
-      }
+              return {
+                errors,
+                valid: !errors.length
+              }
+            } else {
+              return null;
+            }
+          }
+        }
+      })
     }
   }
-})
+
+  Vue.use(validationPlugin)
+
+  new Vue({
+    el: '#app',
+    data: {
+      text: 'foo',
+      email: ''
+    },
+    validations: {
+      text: {
+        validate: value => value.length >= 5,
+        message: (key, value) => `${key} should have a min length of 5, but got ${value.length}`
+      },
+      email: {
+        validate: value => /email/.test(value),
+        message: key => `${key} must be a valid email`
+      }
+    },
+    methods: {
+      validate(e) {
+        if (!this.$v.valid) {
+          e.preventDefault()
+          alert('not valid!')
+        }
+      }
+    }
+  })
 </script>

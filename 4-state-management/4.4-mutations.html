@@ -1,6 +1,6 @@
 <script src="../node_modules/vue/dist/vue.js"></script>
 
-<div>
+<div id="app">
   <counter></counter>
   <counter></counter>
   <counter></counter>
@@ -8,32 +8,46 @@
 </div>
 
 <script>
-function createStore ({ state, mutations }) {
-  // Implement this!
-}
+  function createStore({ state, mutations }) {
+    // Implement this!
 
-const store = createStore({
-  state: { count: 0 },
-  mutations: {
-    inc (state) {
-      state.count++
+    const store = {
+      state: new Vue({
+        data() {
+          return state
+        }
+      }),
+      commit(mutation, ...args) {
+        mutations[mutation](this.state, ...args)
+      }
+    }
+
+
+    return store
+  }
+
+  const store = createStore({
+    state: { count: 0 },
+    mutations: {
+      inc(state) {
+        state.count++
+      }
+    }
+  })
+
+  const Counter = {
+    render(h) {
+      return h('div', store.state.count)
     }
   }
-})
 
-const Counter = {
-  render (h) {
-    return h('div', store.state.count)
-  }
-}
-
-new Vue({
-  el: '#app',
-  components: { Counter },
-  methods: {
-    inc () {
-      store.commit('inc')
+  new Vue({
+    el: '#app',
+    components: { Counter },
+    methods: {
+      inc() {
+        store.commit('inc')
+      }
     }
-  }
-})
+  })
 </script>

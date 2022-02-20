@@ -1,3 +1,5 @@
+jest.setTimeout(1000)
+
 const fs = require('fs')
 const path = require('path')
 const { JSDOM } = require('jsdom')
@@ -10,9 +12,10 @@ function getFilename (file) {
   return files.filter(f => f.startsWith(id) && f.endsWith('.html'))[0]
 }
 
-exports.createTestCase = (file, fn) => {
+exports.createTestCase = (file, fn, extra) => {
   const fileToTest = getFilename(file)
   it(fileToTest.replace(/\.html$/, ''), done => {
+    console.log(fileToTest)
     JSDOM.fromFile(
       path.resolve(file, `../../${fileToTest}`),
       {
@@ -33,7 +36,12 @@ exports.createTestCase = (file, fn) => {
         if (window.Vue) {
           window.Vue.config.productionTip = false
         }
-        fn(window, log.mock.calls, done)
+        if (extra) {
+          extra(window)
+        }
+        setTimeout(() => {
+          fn(window, log.mock.calls, done)
+        }, 0)
       })
     })
   })
